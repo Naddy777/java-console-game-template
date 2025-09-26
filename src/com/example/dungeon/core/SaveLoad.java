@@ -41,10 +41,10 @@ public class SaveLoad {
                 if (parts.length == 2) map.put(parts[0], parts[1]);
             }
             Player p = s.getPlayer();
-            String[] pp = map.getOrDefault("player", "player;Hero;10;3").split(";");
-            p.setName(pp[0]);
-            p.setHp(Integer.parseInt(pp[1]));
-            p.setAttack(Integer.parseInt(pp[2]));
+            String[] pp = map.getOrDefault("player", "Hero;10;3").split(";");// убран player;
+            p.setName(pp[0]);// ошибка нумерации, была с 1, исправлено
+            p.setHp(Integer.parseInt(pp[1]));// ошибка нумерации, была с 2, исправлено
+            p.setAttack(Integer.parseInt(pp[2]));// ошибка нумерации, была с 3, исправлено
             p.getInventory().clear();
             String inv = map.getOrDefault("inventory", "");
             if (!inv.isBlank()) for (String tok : inv.split(",")) {

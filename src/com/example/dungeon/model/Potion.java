@@ -7,6 +7,9 @@ public class Potion extends Item {
         super(name);
         this.heal = heal;
     }
+    public int getHeal() {
+        return heal;
+    }
 
     @Override
     public void apply(GameState ctx) {
