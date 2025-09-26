@@ -1,0 +1,3 @@
+player;Маша;13;16
+inventory;Potion:Среднее зелье
+room;Лес

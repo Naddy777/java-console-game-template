@@ -135,8 +135,8 @@ public class Game {
                     currentRoom.getItems().add(loot);
                     System.out.println(monster.getName()+" (ур. "+monster.getLevel()+")"+" оставил после себя "+loot.getName());
                 }
-                int scoreForWin = monster.getLevel(); //Начисляем кол-во очков = уровню монстра
-                ctx.addScore(scoreForWin); //Фиксиуем
+                int scoreForWin = monster.getLevel(); //Начисляем кол-во очков от уровня монстра
+                ctx.addScore(scoreForWin); //Записываем счет
             } else {
                 //Ход монстра
                 //Принимаем урон монстра = уровень монстра
@@ -160,7 +160,7 @@ public class Game {
     }
 
     private void bootstrapWorld() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);// надо добавить условие на загрузку: загрузить? или новый игрок?
         System.out.print("Введите ваше имя: ");
         String player = scanner.nextLine();
         Player hero = new Player(player, 20, 5);
@@ -182,7 +182,7 @@ public class Game {
     }
 
     public void run() {
-        System.out.println("Добро пожаловать в игру DungeonMini (TEMPLATE).  Для вызова команд введите 'help'.");
+        System.out.println("Добро пожаловать в игру DungeonMini (TEMPLATE).  Если Вы хотите зашрузить предыдущую игру, введите load. Для вызова команд введите 'help'.");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
             while (true) {
                 System.out.print("> ");
