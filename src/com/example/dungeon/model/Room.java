@@ -8,6 +8,7 @@ public class Room {
     private final Map<String, Room> neighbors = new HashMap<>();
     private final List<Item> items = new ArrayList<>();
     private Monster monster;
+    private int locked = 0;// 0 - открыта, 1 - закрыта
 
     public Room(String name, String description) {
         this.name = name;
@@ -46,5 +47,16 @@ public class Room {
             sb.append("\nВыходы: ").append(String.join(", ", neighbors.keySet()));
         }
         return sb.toString();
+    }
+    public int getLocked() {
+        return locked;
+    }
+
+    public boolean isLocked() {
+        return locked == 1;// закрыта если 1
+    }
+
+    public void setLocked(int locked) {
+        this.locked = locked;
     }
 }

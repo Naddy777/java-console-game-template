@@ -41,11 +41,11 @@ public class Game {
             Room nextRoom = currentRoom.getNeighbors().get(direction);
             //Если нашли, то перемещаемся
             if (nextRoom != null) {
-                //Проверяем, не закрыта ли дверь
-//                if (nextRoom.isLocked()) {
-//                    System.out.println("Дверь заперта. Нужен ключ");
-//                    return;
-//                }
+//                Проверяем, не закрыта ли дверь
+                if (nextRoom.isLocked()) {
+                    System.out.println("Дверь заперта. Нужен ключ");
+                    return;
+                }
                 ctx.setCurrent(nextRoom);
                 System.out.println("Вы перешли в: "+nextRoom.getName());
                 //Описание локации
@@ -169,14 +169,22 @@ public class Game {
         Room square = new Room("Площадь", "Каменная площадь с фонтаном.");
         Room forest = new Room("Лес", "Шелест листвы и птичий щебет.");
         Room cave = new Room("Пещера", "Темно и сыро.");
+        Room castle = new Room("Замок", "Мощные ворота возвышаются и уходят к небу.");
+        Room lawn = new Room("Поляна", "В центре огромный камень.");
         square.getNeighbors().put("north", forest);
         forest.getNeighbors().put("south", square);
         forest.getNeighbors().put("east", cave);
+        forest.getNeighbors().put("west", lawn);
         cave.getNeighbors().put("west", forest);
+        castle.getNeighbors().put("east", square);
+        lawn.getNeighbors().put("east", forest);
+        square.getNeighbors().put("west", castle);
 
         forest.getItems().add(new Potion("Малое зелье", 5));
         forest.setMonster(new Monster("Волк", 1, 8, new Potion("Среднее зелье", 10)));
         cave.setMonster(new Monster("Змея", 2, 16, new Weapon("Стальной клинок", 11)));
+        lawn.getItems().add(new Key("Ключ от замка"));
+        castle.setLocked(1);
 
         state.setCurrent(square);
     }

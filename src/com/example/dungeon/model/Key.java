@@ -7,6 +7,15 @@ public class Key extends Item {
 
     @Override
     public void apply(GameState ctx) {
-        System.out.println("Ключ звенит. Возможно, где-то есть дверь...");
+        Room currentRoom = ctx.getCurrent();
+        //System.out.println("Ключ звенит. Возможно, где-то есть дверь...");
+        boolean keyUnlock = currentRoom.getNeighbors().values().stream()
+                .anyMatch(room -> room.getLocked() == 1);
+        if (keyUnlock) {
+            currentRoom.getNeighbors().values().stream()
+                    .filter(room -> room.getLocked() == 1)
+                    .forEach(room -> room.setLocked(0));
+            System.out.println("Дверь открыта ключом! ");
+        }
     }
 }
