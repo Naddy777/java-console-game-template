@@ -31,7 +31,7 @@ public class Game {
         commands.put("look", (ctx, a) -> System.out.println(ctx.getCurrent().describe()));
         commands.put("move", (ctx, args) -> {
 //            System.out.println("Куда идем? Выбери направление move north, move south, move east, move west");
-            //Проверка на кол-во аргументов:
+            //Проверяем на корректность аргументы:
             if (args.isEmpty()) {
                 throw new InvalidCommandException("Неверно задано направление. Выбери, куда идем: move north, move south, move east, move west");
             }
@@ -39,9 +39,9 @@ public class Game {
             //Получаем следующую комнату из карты
             Room currentRoom = ctx.getCurrent();
             Room nextRoom = currentRoom.getNeighbors().get(direction);
-            //Если нашли, то перемещаемся
+            //Если она есть, перемещаемся
             if (nextRoom != null) {
-//                Проверяем, не закрыта ли дверь
+//                Проверяем, закрыта ли дверь
                 if (nextRoom.isLocked()) {
                     System.out.println("Дверь заперта. Нужен ключ");
                     return;
@@ -67,9 +67,9 @@ public class Game {
                     .findFirst();
             if (foundItem.isPresent()) {
                 Item item = foundItem.get();
-                //Удаляем из комнаты
+                //Удаляем предмет из комнаты
                 currentRoom.getItems().remove(item);
-                //Добавляем в инвентарь игрока
+                //Добавляем предмет в инвентарь игрока
                 ctx.getPlayer().getInventory().add(item);
                 System.out.println("Взято: "+item.getName());
             } else {
@@ -77,17 +77,17 @@ public class Game {
         });
         commands.put("inventory", (ctx, args) -> {
             List<Item> inventory = ctx.getPlayer().getInventory();
-            //Проверяем состояние инвентаря
+            //Печатаем состояние инвентаря
             if (inventory.isEmpty()) {
                 System.out.println("Инвентарь пуст");
                 return;
             }
-            //Группировка предметов по классам
+            //Группируем предметы по классам
             Map<String, List<Item>> groupedItems = inventory.stream()
                     .collect(Collectors.groupingBy(item -> item.getClass().getSimpleName()));
             //Проходим по каждой группе и выводим информацию
             groupedItems.forEach((type, items) -> {
-                //Сортировка по имени в группе
+                //Сортируем предметы по имени в группе
                 List<String> itemNames = items.stream()
                         .map(Item::getName)
                         .sorted()
@@ -100,7 +100,7 @@ public class Game {
             if (args.isEmpty()) {
                 throw new InvalidCommandException("Не указан предмет");
             }
-            //Объединяем в одну строку аргументы
+            //Объединяем аргументы в одну строку
             String itemName = String.join(" ", args);
             Player player = ctx.getPlayer();
             //Ищем в инвентаре
@@ -118,15 +118,15 @@ public class Game {
             Room currentRoom = ctx.getCurrent();
             Monster monster = currentRoom.getMonster();
             Player player = ctx.getPlayer();
-            //Проверяем, что есть монстр
+            //Проверяем, что в локации есть монстр
             if (monster == null) {
                 throw new InvalidCommandException("Здесь не с кем сражаться");
             }
-            //Бой>
-            //Ход игрока
+            //Описание боя
+            //Удары от игрока
             monster.setHp(monster.getHp() - player.getAttack());
             System.out.println("Вы бьёте "+monster.getName()+" на "+player.getAttack()+". HP монстра: "+monster.getHp());
-            //Проверяем, жив ли монстр
+            //Проверяем, здоровье монстра
             if (monster.getHp() <= 0) {
                 System.out.println("Вы победили "+monster.getName()+" (ур. "+monster.getLevel()+")");
                 currentRoom.setMonster(null);
@@ -138,8 +138,8 @@ public class Game {
                 int scoreForWin = monster.getLevel(); //Начисляем кол-во очков от уровня монстра
                 ctx.addScore(scoreForWin); //Записываем счет
             } else {
-                //Ход монстра
-                //Принимаем урон монстра = уровень монстра
+                //Удары от монстра
+                //Принимаем, что урон монстра будет соответствовать уровню монстра
                 int monsterDamage = monster.getLevel();
                 player.setHp(player.getHp()-monsterDamage);
                 System.out.println("Монстр отвечает на "+monsterDamage+". Ваше HP: "+player.getHp());
@@ -154,7 +154,7 @@ public class Game {
         commands.put("load", (ctx, a) -> SaveLoad.load(ctx));
         commands.put("scores", (ctx, a) -> SaveLoad.printScores());
         commands.put("exit", (ctx, a) -> {
-            System.out.println("Пока!");
+            System.out.println("До скорых встреч!");
             System.exit(0);
         });
     }
@@ -176,21 +176,21 @@ public class Game {
         forest.getNeighbors().put("east", cave);
         forest.getNeighbors().put("west", lawn);
         cave.getNeighbors().put("west", forest);
-        castle.getNeighbors().put("east", square);
-        lawn.getNeighbors().put("east", forest);
-        square.getNeighbors().put("west", castle);
+        castle.getNeighbors().put("east", square);// новая локация
+        lawn.getNeighbors().put("east", forest);// новая локация
+        square.getNeighbors().put("west", castle);// новая локация
 
         forest.getItems().add(new Potion("Малое зелье", 5));
         forest.setMonster(new Monster("Волк", 1, 8, new Potion("Среднее зелье", 10)));
-        cave.setMonster(new Monster("Змея", 2, 16, new Weapon("Стальной клинок", 11)));
-        lawn.getItems().add(new Key("Ключ от замка"));
-        castle.setLocked(1);
+        cave.setMonster(new Monster("Змея", 2, 16, new Weapon("Стальной клинок", 11)));// новый монстр
+        lawn.getItems().add(new Key("Ключ от замка"));// кладем ключ на поляну
+        castle.setLocked(1);// запираем замок на ключ
 
         state.setCurrent(square);
     }
 
     public void run() {
-        System.out.println("Добро пожаловать в игру DungeonMini (TEMPLATE).  Если Вы хотите зашрузить предыдущую игру, введите load. Для вызова команд введите 'help'.");
+        System.out.println("Добро пожаловать в игру DungeonMini (TEMPLATE).  Если Вы хотите загрузить предыдущую игру, введите load. Для вызова команд введите 'help'.");
         try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
             while (true) {
                 System.out.print("> ");
