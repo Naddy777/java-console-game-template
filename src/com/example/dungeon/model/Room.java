@@ -48,7 +48,7 @@ public class Room {
         }
         return sb.toString();
     }
-    public int getLocked() {
+    public int getLocked() {// добавлены методы на закрытие/открытие комнаты
         return locked;
     }
 

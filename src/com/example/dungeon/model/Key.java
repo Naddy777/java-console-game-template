@@ -6,7 +6,7 @@ public class Key extends Item {
     }
 
     @Override
-    public void apply(GameState ctx) {
+    public void apply(GameState ctx) {// переписан метод на открытие двери ключом
         Room currentRoom = ctx.getCurrent();
         //System.out.println("Ключ звенит. Возможно, где-то есть дверь...");
         boolean keyUnlock = currentRoom.getNeighbors().values().stream()

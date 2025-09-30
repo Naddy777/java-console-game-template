@@ -157,9 +157,34 @@ public class Game {
             System.out.println("До скорых встреч!");
             System.exit(0);
         });
+        commands.put("alloc", (ctx, args) -> {
+            System.out.println("Демонстрация работы GC...");
+            //До аллокации
+            Runtime rt = Runtime.getRuntime();
+            long memoryBefore = rt.totalMemory() - rt.freeMemory();
+            System.out.println("Память до: " + memoryBefore + " байт");
+            //Создаем много объектов для демонстрации работы GC
+            List<String> tempList = new ArrayList<>();
+            for (int i = 0; i < 100000; i++) {
+                tempList.add("Временный объект " + i + " " + new Date());
+            }
+            long memoryDuring = rt.totalMemory() - rt.freeMemory();
+            System.out.println("Память во время: " + memoryDuring + " байт");
+            System.out.println("Выделено: " + (memoryDuring - memoryBefore) + " байт");
+            //Освобождаем ссылки - объекты становятся кандидатами на GC
+            tempList = null;
+            //Выполняем сборку мусора
+            System.gc();
+            //ставим отсрочку для GC
+            try { Thread.sleep(1000); } catch (InterruptedException e) {}
+            long memoryAfter = rt.totalMemory() - rt.freeMemory();
+            System.out.println("Память после: " + memoryAfter + " байт");
+            System.out.println("Освобождено GC: " + (memoryDuring - memoryAfter) + " байт");
+        });
     }
 
     private void bootstrapWorld() {
+//        System.out.println("Добро пожаловать в игру DungeonMini (TEMPLATE).  Если Вы хотите загрузить предыдущую игру, введите load. Для вызова команд введите 'help'.");
         Scanner scanner = new Scanner(System.in);// надо добавить условие на загрузку: загрузить? или новый игрок?
         System.out.print("Введите ваше имя: ");
         String player = scanner.nextLine();
